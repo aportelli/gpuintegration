@@ -70,6 +70,11 @@ Last three arguments are: total iterations, iteration
     }                                                                          \
   }
 
+#define LOG(debug, ...)                                                        \
+  if (debug) {                                                                 \
+    std::cout << "[vegas] " << __VA_ARGS__ << std::endl;                       \
+  }
+
 namespace cuda_mcubes {
 
   using MilliSeconds =
@@ -780,7 +785,7 @@ namespace cuda_mcubes {
     Kernel_Params params(ncall, chunkSize, ndim);
     IterDataLogger<DEBUG_MCUBES, ndim> data_collector(
       totalNumThreads, chunkSize, extra, npg, ndim);
-
+    LOG(true, "starting iterations with adjustement");
     for (it = 1; it <= itmax && (*status) == 1; (*iters)++, it++) {
 
       ti = tsi = 0.0;
@@ -867,6 +872,12 @@ namespace cuda_mcubes {
         // data_collector.PrintFuncEvals(it, ncubes, npg, ndim);
         data_collector.PrintIterResults(it, *tgral, *sd, *chi2a, ti, tsi);
       }
+      if (it > skip)
+      {
+        char logBuf[1024];
+        snprintf(logBuf, sizeof(logBuf), "iteration %4d: relErr %.2e chi^2/dof %.2f", it, *sd/fabs(*tgral), *chi2a);
+        LOG(true, logBuf);
+      }
       
 
       // replace above with datalogger.print();
@@ -912,6 +923,7 @@ namespace cuda_mcubes {
 
     //  Start of iterations without adjustment
 
+    LOG(true, "starting iterations without adjustement");
     cudaMemcpy(xi_dev,
                xi,
                sizeof(double) * (mxdim_p1) * (ndmx_p1),
@@ -973,6 +985,12 @@ namespace cuda_mcubes {
         // data_collector.PrintRandomNums(it, ncubes, npg, ndim);
         // data_collector.PrintFuncEvals(it, ncubes, npg, ndim);
         data_collector.PrintIterResults(it, *tgral, *sd, *chi2a, ti, tsi);
+      }
+      if (it > skip)
+      {
+        char logBuf[1024];
+        snprintf(logBuf, sizeof(logBuf), "iteration %4d: relErr %.2e chi^2/dof %.2f", it, *sd/fabs(*tgral), *chi2a);
+        LOG(true, logBuf);
       }
     } // end of iterations
 
