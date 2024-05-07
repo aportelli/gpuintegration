@@ -878,6 +878,12 @@ namespace cuda_mcubes {
         snprintf(logBuf, sizeof(logBuf), "iteration %4d: val %.6e absErr %.2e relErr %.2e chi^2/dof %.2f", it, *tgral, *sd, *sd/fabs(*tgral), *chi2a);
         LOG(true, logBuf);
       }
+      else
+      {
+        char logBuf[1024];
+        snprintf(logBuf, sizeof(logBuf), "iteration %4d (skipped)", it);
+        LOG(true, logBuf);
+      }
       
 
       // replace above with datalogger.print();
