@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "/home/isaki001/numint/gpuintegration/cuda/pagani/demos/compute_genz_integrals.cuh"
+#include "cuda/pagani/demos/compute_genz_integrals.cuh"
 
 using std::cout;
 using std::chrono::duration;
